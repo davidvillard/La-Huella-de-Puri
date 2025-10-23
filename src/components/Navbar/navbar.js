@@ -73,14 +73,14 @@ export default function Navbar() {
             >
                 <div className="max-w-7xl mx-auto px-6 py-4 flex flex-col gap-2">
                     <Link
-                        href="/sobre-nosotros"
+                        href="/"
                         className="py-3 text-[18px] font-semibold text-[#354A37] hover:text-[#2a3c2b] transition-colors"
                         onClick={() => setOpen(false)}
                     >
                         Sobre Nosotros
                     </Link>
                     <Link
-                        href="/nuestros-productos"
+                        href="/productos"
                         className="py-3 text-[18px] font-semibold text-[#354A37] hover:text-[#2a3c2b] transition-colors"
                         onClick={() => setOpen(false)}
                     >
