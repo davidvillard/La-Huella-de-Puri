@@ -52,7 +52,7 @@ function LoginForm() {
 
                     <button
                         type="submit"
-                        className="w-full py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] hover:shadow-lg active:scale-[0.98]"
+                        className="w-full cursor-pointer py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] hover:shadow-lg active:scale-[0.98]"
                     >
                         Acceder al sitio
                     </button>
