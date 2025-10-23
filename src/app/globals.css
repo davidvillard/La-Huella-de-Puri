@@ -2,32 +2,19 @@
 /* Classico Regular */
 @font-face {
   font-family: "Classico";
-  src: url("/fonts/classico-regular.otf") format("opentype");
-  font-weight: 400;
+  src: 
+    url('/fonts/classico-regular.woff2') format('woff2'), /* El formato más moderno primero */
+    url('/fonts/classico-regular.woff') format('woff');   /* Fallback para navegadores más antiguos */
+  font-weight: normal;
   font-style: normal;
+  font-display: swap; /* Mejora el rendimiento de la carga */
 }
-
-/* Classico Bold
-@font-face {
-  font-family: "Classico";
-  src: url("/fonts/classico-bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-} */
 
 /* Georgia Regular */
 @font-face {
   font-family: "Georgia";
   src: url("/fonts/georgia.ttf") format("truetype");
   font-weight: 400;
-  font-style: normal;
-}
-
-/* Georgia Bold */
-@font-face {
-  font-family: "Georgia";
-  src: url("/fonts/georgia-bold.ttf") format("truetype");
-  font-weight: 700;
   font-style: normal;
 }
 
@@ -56,4 +43,9 @@ body {
 
 .georgia {
   font-family: "Georgia", Arial, Helvetica, sans-serif;
+}
+
+/* O aplícala a una clase específica */
+.font-classico {
+  font-family: 'Classico', sans-serif;
 }

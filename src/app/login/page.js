@@ -8,6 +8,7 @@ function LoginForm() {
     const router = useRouter();
     const [error, setError] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isSuccess, setIsSuccess] = useState(false); // Nuevo estado para el éxito
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -25,17 +26,23 @@ function LoginForm() {
             const result = await response.json();
 
             if (result.success) {
-                // Éxito: redirige a la página de inicio
-                router.push('/');
+                // 1. Marcar como exitoso para mostrar el loader
+                setIsSuccess(true);
+
+                // 2. Esperar un momento para que la cookie se guarde y luego redirigir
+                setTimeout(() => {
+                    window.location.href = '/'; // Usamos recarga completa para máxima fiabilidad
+                }, 800); // 800ms de retraso
+
             } else {
-                // Error: muestra el mensaje
                 setError('Contraseña incorrecta. Inténtalo de nuevo.');
+                setIsSubmitting(false); // Detener el loader de envío si hay error
             }
         } catch (err) {
             setError('Ha ocurrido un error. Por favor, inténtalo más tarde.');
-        } finally {
-            setIsSubmitting(false);
+            setIsSubmitting(false); // Detener el loader de envío si hay error
         }
+        // No necesitamos el 'finally' aquí porque controlamos el estado en cada rama
     };
 
     return (
@@ -82,10 +89,22 @@ function LoginForm() {
 
                     <button
                         type="submit"
-                        disabled={isSubmitting}
-                        className="w-full cursor-pointer py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] active:scale-[0.98] disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        disabled={isSubmitting || isSuccess} // Deshabilitado durante el envío y el éxito
+                        className="w-full flex items-center justify-center cursor-pointer py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] active:scale-[0.98] disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        {isSubmitting ? 'Verificando...' : 'Acceder al sitio'}
+                        {isSuccess ? (
+                            <>
+                                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                </svg>
+                                ¡Éxito! Redirigiendo...
+                            </>
+                        ) : isSubmitting ? (
+                            'Verificando...'
+                        ) : (
+                            'Acceder al sitio'
+                        )}
                     </button>
 
                     {error && (
