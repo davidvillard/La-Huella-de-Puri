@@ -1,12 +1,43 @@
 'use client';
 
-import { Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { Suspense, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Image from "next/image";
 
 function LoginForm() {
-    const searchParams = useSearchParams();
-    const error = searchParams.get('error');
+    const router = useRouter();
+    const [error, setError] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        setIsSubmitting(true);
+        setError(null);
+
+        const formData = new FormData(event.currentTarget);
+
+        try {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Éxito: redirige a la página de inicio
+                router.push('/');
+                router.refresh(); // Asegura que el servidor re-evalúe la cookie
+            } else {
+                // Error: muestra el mensaje
+                setError('Contraseña incorrecta. Inténtalo de nuevo.');
+            }
+        } catch (err) {
+            setError('Ha ocurrido un error. Por favor, inténtalo más tarde.');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
 
     return (
         <div className="w-full max-w-md">
@@ -20,7 +51,7 @@ function LoginForm() {
                         width={94}
                         height={94}
                         priority
-                        className="w-20 h-20 sm:w-24 sm:h-24 transition-transform hover:scale-105"
+                        className="w-20 h-20 sm:w-24 sm:h-24"
                     />
                 </div>
 
@@ -34,7 +65,7 @@ function LoginForm() {
                 </p>
 
                 {/* Formulario */}
-                <form action="/api/login" method="POST" className="space-y-5">
+                <form onSubmit={handleSubmit} className="space-y-5">
                     <div>
                         <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                             Contraseña
@@ -52,9 +83,10 @@ function LoginForm() {
 
                     <button
                         type="submit"
-                        className="w-full cursor-pointer py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] hover:shadow-lg active:scale-[0.98]"
+                        disabled={isSubmitting}
+                        className="w-full cursor-pointer py-4 text-base font-semibold text-white bg-[#354A37] rounded-xl transition-all hover:bg-[#2a3b2c] active:scale-[0.98] disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
-                        Acceder al sitio
+                        {isSubmitting ? 'Verificando...' : 'Acceder al sitio'}
                     </button>
 
                     {error && (
@@ -62,20 +94,10 @@ function LoginForm() {
                             <svg className="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd"/>
                             </svg>
-                            <span>Contraseña incorrecta. Inténtalo de nuevo.</span>
+                            <span>{error}</span>
                         </div>
                     )}
                 </form>
-
-                {/* Footer */}
-                <div className="mt-8 pt-6 border-t border-gray-100">
-                    <p className="text-center text-xs text-gray-500 flex items-center justify-center gap-1.5">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                        </svg>
-                        Contenido protegido
-                    </p>
-                </div>
             </div>
         </div>
     );
@@ -84,17 +106,7 @@ function LoginForm() {
 export default function LoginPage() {
     return (
         <div className="min-h-[70vh] flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-5">
-            <Suspense fallback={
-                <div className="w-full max-w-md">
-                    <div className="bg-white rounded-2xl shadow-lg p-8 sm:p-10 animate-pulse">
-                        <div className="h-24 w-24 bg-gray-200 rounded-full mx-auto mb-8"></div>
-                        <div className="h-8 bg-gray-200 rounded w-3/4 mx-auto mb-4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-1/2 mx-auto mb-8"></div>
-                        <div className="h-12 bg-gray-200 rounded mb-4"></div>
-                        <div className="h-12 bg-gray-200 rounded"></div>
-                    </div>
-                </div>
-            }>
+            <Suspense>
                 <LoginForm />
             </Suspense>
         </div>
