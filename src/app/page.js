@@ -7,7 +7,7 @@ import Cta from "@/components/Cta/cta";
 
 export default function Home() {
   return (
-    <main className="flex flex-col gap-[180px] px-6 sm:px-10 md:px-16 py-10 md:py-12">
+    <main className="flex flex-col gap-[80px] lg:gap-[180px] px-6 sm:px-10 md:px-16 py-10 md:py-12">
       <Banner />
       <Products />
       <About />

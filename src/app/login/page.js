@@ -27,7 +27,6 @@ function LoginForm() {
             if (result.success) {
                 // Éxito: redirige a la página de inicio
                 router.push('/');
-                router.refresh(); // Asegura que el servidor re-evalúe la cookie
             } else {
                 // Error: muestra el mensaje
                 setError('Contraseña incorrecta. Inténtalo de nuevo.');
