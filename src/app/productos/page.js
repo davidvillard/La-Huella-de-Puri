@@ -37,3 +37,5 @@ export default async function ProductosPage() {
     </main>
   );
 }
+
+export const dynamic = 'force-dynamic';
